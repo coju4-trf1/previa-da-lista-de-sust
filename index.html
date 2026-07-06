@@ -969,8 +969,12 @@ btnGenerate.addEventListener("click", async () => {
   showStatus("Gerando documento Word...","info");
   try {
     const blob = await generateWord(processedData);
-    const dt = document.getElementById("dataSessao").value.replace(/\//g,"_") || "preview";
-    const filename = `${dt}_-_PRÉVIA_DA_LISTA_DE_SUSTENTAÇÕES_ORAIS.docx`;
+    const dataSessaoVal = document.getElementById("dataSessao").value.trim();
+    const partsData = dataSessaoVal.split("/");
+    const dt = partsData.length === 3
+      ? `${partsData[0]}.${partsData[1]}.${partsData[2].slice(-2)}`
+      : "preview";
+    const filename = `${dt} -PRÉVIA DA LISTA DE SUSTENTAÇÕES ORAIS.docx`;
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a"); a.href=url; a.download=filename; a.click();
     URL.revokeObjectURL(url);
