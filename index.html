@@ -87,9 +87,85 @@
   .preview .prio-1 { background: #e8f5e9; }
   .preview .prio-2 { background: #e3f2fd; }
   .footer { text-align: center; font-size: 11px; color: #999; padding: 16px; }
+
+  .multi-file-list { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .multi-file-item {
+    display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+    border-radius: 8px; background: #f8f9fb; border: 1px solid #e0e0e0; font-size: 12.5px;
+  }
+  .multi-file-item.ok { border-color: #a5d6a7; background: #f1f8f1; }
+  .multi-file-item.warn { border-color: #ffcc80; background: #fff8ee; }
+  .multi-file-item.error { border-color: #ef9a9a; background: #fdeeee; }
+  .multi-file-item .mf-icon { font-size: 18px; flex-shrink: 0; }
+  .multi-file-item .mf-info { flex: 1; min-width: 0; }
+  .multi-file-item .mf-name { font-weight: 600; color: #1a3a5c; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .multi-file-item .mf-detail { color: #777; margin-top: 2px; }
+  .mf-remove { background: none; border: none; color: #c62828; font-size: 16px; cursor: pointer; padding: 2px 6px; flex-shrink: 0; }
+  .mf-remove:hover { color: #8e0000; }
+  .badge { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+  .badge.ok { background: #c8e6c9; color: #1b5e20; }
+  .badge.warn { background: #ffe0b2; color: #e65100; }
+  .badge.error { background: #ffcdd2; color: #b71c1c; }
+  .nf-list { margin-top: 14px; max-height: 320px; overflow-y: auto; }
+  .nf-item { padding: 10px 12px; border-bottom: 1px solid #eee; font-size: 12.5px; }
+  .nf-item:last-child { border-bottom: none; }
+  .nf-item .nf-cnj { font-weight: 700; color: #b71c1c; }
+  .nf-item .nf-line { color: #666; margin-top: 2px; }
+  .nf-item .nf-relator { color: #333; margin-top: 2px; font-style: italic; }
+
+  .alert-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(20,10,10,0.55);
+    z-index: 9999; align-items: center; justify-content: center; padding: 20px;
+  }
+  .alert-overlay.show { display: flex; }
+  .alert-modal {
+    background: white; border-radius: 14px; max-width: 420px; width: 100%;
+    padding: 0; box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+    border-top: 6px solid #c62828;
+    animation: alertPop 0.28s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes alertPop {
+    0% { transform: scale(0.85); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .alert-modal .alert-icon {
+    font-size: 40px; text-align: center; margin-top: 22px;
+    animation: alertShake 0.6s ease-in-out 0.28s;
+  }
+  @keyframes alertShake {
+    0%, 100% { transform: rotate(0deg); }
+    20% { transform: rotate(-8deg); }
+    40% { transform: rotate(8deg); }
+    60% { transform: rotate(-6deg); }
+    80% { transform: rotate(6deg); }
+  }
+  .alert-modal .alert-title {
+    font-size: 17px; font-weight: 800; color: #b71c1c; text-align: center;
+    margin: 10px 24px 4px;
+  }
+  .alert-modal .alert-message {
+    font-size: 14px; color: #333; text-align: center; line-height: 1.5;
+    margin: 0 24px 22px;
+  }
+  .alert-modal .alert-btn {
+    display: block; width: calc(100% - 48px); margin: 0 24px 24px;
+    background: linear-gradient(135deg, #c62828, #b71c1c); color: white;
+    border: none; border-radius: 9px; padding: 13px; font-size: 14.5px;
+    font-weight: 700; font-family: inherit; cursor: pointer; transition: all 0.2s;
+  }
+  .alert-modal .alert-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(183,28,28,0.35); }
 </style>
 </head>
 <body>
+
+<div class="alert-overlay" id="alertOverlay">
+  <div class="alert-modal">
+    <div class="alert-icon">⚠️</div>
+    <div class="alert-title" id="alertTitle">Atenção</div>
+    <div class="alert-message" id="alertMessage"></div>
+    <button class="alert-btn" id="alertBtnOk">Entendi</button>
+  </div>
+</div>
 
 <div class="header">
   <h1>PRÉVIA DE SUSTENTAÇÕES ORAIS - VERSÃO 1.6</h1>
@@ -160,13 +236,58 @@
     <div class="status" id="status"></div>
   </div>
 
+  <!-- STEP 5: Upload de Sinopses -->
+  <div class="card">
+    <h2><span class="num">5</span> Upload de Sinopses</h2>
+    <div class="help-text" style="margin-bottom:10px">Anexe os arquivos de sinopse enviados pelos gabinetes (PDF ou Word .docx). Pode soltar vários arquivos de uma vez.</div>
+    <div class="drop-zone" id="dropZoneSinopses">
+      <div class="icon">📑</div>
+      <div class="text">Arraste os arquivos de sinopse aqui ou clique para selecionar</div>
+      <input type="file" id="sinopseInput" accept=".pdf,.docx,.doc" multiple>
+    </div>
+    <div class="multi-file-list" id="sinopseList"></div>
+    <div class="status" id="statusSinopses"></div>
+  </div>
+
+  <!-- STEP 6: Upload da Prévia -->
+  <div class="card">
+    <h2><span class="num">6</span> Upload da Prévia da Lista</h2>
+    <div class="help-text" style="margin-bottom:10px">Anexe o documento Word gerado no Passo 4 (a "prévia"), ainda com os campos SINOPSE e ITEM em branco.</div>
+    <div class="drop-zone" id="dropZonePrevia">
+      <div class="icon">📥</div>
+      <div class="text">Arraste o arquivo .docx da prévia aqui ou clique para selecionar</div>
+      <div class="filename" id="previaFileName"></div>
+      <input type="file" id="previaInput" accept=".docx">
+    </div>
+    <div class="status" id="statusPrevia"></div>
+  </div>
+
+  <!-- STEP 7: Generate Final -->
+  <div class="card">
+    <h2><span class="num">7</span> Gerar Documento Word — Planilha Definitiva</h2>
+    <button class="btn btn-primary" id="btnGenerateFinal" disabled>📄 Gerar Planilha Definitiva (.docx)</button>
+    <div class="status" id="statusFinal"></div>
+  </div>
+
+  <!-- STEP 8: Relatório -->
+  <div class="card" id="cardReport" style="display:none">
+    <h2><span class="num">8</span> Relatório de Processos Não Encontrados</h2>
+    <div id="reportSummary" class="help-text" style="margin-bottom:10px"></div>
+    <div class="nf-list" id="nfList"></div>
+  </div>
+
 </div>
 
 <div class="footer">Ferramenta offline — funciona sem internet após o primeiro carregamento.</div>
 
 <script src="jszip.min.js"></script>
 <script src="docx.iife.js"></script>
+<script src="pdf-worker.js"></script>
+<script src="pdf-lib.js"></script>
 <script>
+// Worker do pdf.js (arquivo local, sem internet/CDN)
+if (window.pdfjsLib) { pdfjsLib.GlobalWorkerOptions.workerSrc = "pdf-worker.js"; }
+
 // ============================================================
 //  XLSX PARSER (minimal, using JSZip)
 // ============================================================
@@ -969,12 +1090,8 @@ btnGenerate.addEventListener("click", async () => {
   showStatus("Gerando documento Word...","info");
   try {
     const blob = await generateWord(processedData);
-    const dataSessaoVal = document.getElementById("dataSessao").value.trim();
-    const partsData = dataSessaoVal.split("/");
-    const dt = partsData.length === 3
-      ? `${partsData[0]}.${partsData[1]}.${partsData[2].slice(-2)}`
-      : "preview";
-    const filename = `${dt} -PRÉVIA DA LISTA DE SUSTENTAÇÕES ORAIS.docx`;
+    const dt = document.getElementById("dataSessao").value.replace(/\//g,"_") || "preview";
+    const filename = `${dt}_-_PRÉVIA_DA_LISTA_DE_SUSTENTAÇÕES_ORAIS.docx`;
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a"); a.href=url; a.download=filename; a.click();
     URL.revokeObjectURL(url);
@@ -982,6 +1099,498 @@ btnGenerate.addEventListener("click", async () => {
   } catch(err) { showStatus("Erro ao gerar: "+err.message,"error"); console.error(err); }
   finally { btnGenerate.disabled = false; }
 });
+// ============================================================
+//  SINOPSE / ITEM — LEITURA DAS SINOPSES E PREENCHIMENTO
+// ============================================================
+const CNJ_RE = /\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}/;
+const W_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+const XML_NS = "http://www.w3.org/XML/1998/namespace";
+
+function sniffBytes(bytes) {
+  if (bytes[0]===0x25 && bytes[1]===0x50 && bytes[2]===0x44 && bytes[3]===0x46) return "pdf";       // %PDF
+  if (bytes[0]===0x50 && bytes[1]===0x4B) return "docx";                                              // PK (zip)
+  if (bytes[0]===0xD0 && bytes[1]===0xCF && bytes[2]===0x11 && bytes[3]===0xE0) return "doc-legacy";  // OLE/CDF
+  return "unknown";
+}
+
+async function readDocxParagraphTexts(arrayBuffer) {
+  const zip = await JSZip.loadAsync(arrayBuffer);
+  const docFile = zip.file("word/document.xml");
+  if (!docFile) throw new Error("não é um .docx válido (word/document.xml ausente)");
+  const xmlText = await docFile.async("text");
+  const xmlDoc = new DOMParser().parseFromString(xmlText, "application/xml");
+  const paragraphs = xmlDoc.getElementsByTagNameNS(W_NS, "p");
+  const lines = [];
+  for (let i=0;i<paragraphs.length;i++) {
+    const tNodes = paragraphs[i].getElementsByTagNameNS(W_NS, "t");
+    let text = "";
+    for (let j=0;j<tNodes.length;j++) text += tNodes[j].textContent || "";
+    lines.push(text);
+  }
+  return lines;
+}
+
+async function readPdfLines(arrayBuffer) {
+  const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+  const lines = [];
+  const EPS = 2.5; // tolerância (pt) para considerar itens na mesma linha
+  for (let p=1; p<=pdf.numPages; p++) {
+    const page = await pdf.getPage(p);
+    const content = await page.getTextContent();
+    const items = (content.items || []).filter(it => it.str !== undefined && it.str !== "");
+    const withPos = items.map(it => ({ str: it.str, x: it.transform[4], y: it.transform[5] }));
+    withPos.sort((a,b) => (b.y - a.y) || (a.x - b.x));
+    let currentY = null, currentLine = [];
+    const pageLines = [];
+    for (const it of withPos) {
+      if (currentY === null || Math.abs(it.y - currentY) > EPS) {
+        if (currentLine.length) pageLines.push(currentLine.map(c=>c.str).join(" ").replace(/\s+/g," ").trim());
+        currentLine = [it]; currentY = it.y;
+      } else {
+        currentLine.push(it);
+      }
+    }
+    if (currentLine.length) pageLines.push(currentLine.map(c=>c.str).join(" ").replace(/\s+/g," ").trim());
+    lines.push(...pageLines);
+  }
+  return lines;
+}
+
+// Lê as linhas de uma sinopse (PDF ou DOCX já carregados como array de texto) e
+// devolve o número da sinopse + um mapa CNJ → { item, resultado }.
+function parseSinopseLines(lines) {
+  let sinopseNumber = "1";
+  const head = lines.slice(0, 20).join(" \n ");
+  const mSin = head.match(/SINOPSE\s*(\d{1,3})?/i);
+  if (mSin && mSin[1]) sinopseNumber = mSin[1];
+
+  const itemMap = new Map(); // cnj -> { item, resultado }
+
+  // Padrão A: número isolado em linha, seguido pelo CNJ.
+  const headerLineRe = /^(?:PJ-?e\s*N[ºo°]?\.?\s*|ITEM\s*N?[ºo°]?\.?\s*)?(\d{1,4})\s*\.?$/i;
+  for (let i=0; i<lines.length; i++) {
+    const m = lines[i].trim().match(headerLineRe);
+    if (!m) continue;
+    const itemVal = m[1];
+    for (let j=i+1; j<Math.min(i+7, lines.length); j++) {
+      if (headerLineRe.test(lines[j].trim())) break;
+      const cm = lines[j].match(CNJ_RE);
+      if (cm) { if (!itemMap.has(cm[0])) itemMap.set(cm[0], { item: itemVal, resultado: "" }); break; }
+    }
+  }
+
+  // Padrão B: tabela com colunas Ordem e Processo.
+  let tableMode = false;
+  for (const line of lines) {
+    if (!tableMode && /\bordem\b/i.test(line) && /\bprocesso\b/i.test(line)) { tableMode = true; continue; }
+    if (!tableMode) continue;
+    const re = /(\d{1,6})\s+(\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4})/g;
+    let m;
+    while ((m = re.exec(line))) {
+      const cnj = m[2];
+      if (!itemMap.has(cnj)) itemMap.set(cnj, { item: m[1], resultado: "" });
+      else itemMap.get(cnj).item = m[1];
+    }
+  }
+
+  // Captura do ACÓRDÃO: texto entre "ACÓRDÃO" e o próximo número de processo ou fim.
+  // O resultado fica associado ao último CNJ visto antes desse ACÓRDÃO.
+  // Ignora CNJs encontrados em linhas de índice/tabela (formato: "ID ORDEM CNJ Ementa")
+  // para que o índice do início de algumas sinopses não contamine lastCnj.
+  // Usa marcadores "Num. XXXXXXXX - Pág. N" para rastrear corretamente mesmo com páginas fora de ordem.
+  const indexLineRe = /^\d{7,10}\s+\d{1,3}\s+\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}/;
+  const numPageRe   = /^Num\.\s*(\d{6,10})\s*-\s*P[aá]g\./i;
+
+  // Mapa pjeId → CNJ:
+  // Método 1: linha com "Id ORDEM CNJ" juntos (formato tabela inline)
+  // Método 2: algumas sinopses extraem as colunas separadas — IDs bare e CNJs bare em blocos distintos,
+  //           pareados por posição de ocorrência no arquivo.
+  const pjeIdToCnj = new Map();
+  // Método 1
+  for (const line of lines) {
+    const m = line.trim().match(/^(\d{7,10})\s+\d{1,3}\s+(\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4})/);
+    if (m) pjeIdToCnj.set(m[1], m[2]);
+  }
+  // Método 2: colunas separadas — coleta bare pjeIds (8-10 dígitos) e bare CNJs, emparelha por posição
+  if (pjeIdToCnj.size === 0) {
+    const bareIds = [], bareCnjs = [];
+    for (const line of lines) {
+      const t = line.trim();
+      if (/^\d{8,10}$/.test(t)) { bareIds.push(t); continue; }
+      const cm = t.match(CNJ_RE);
+      if (cm && t === cm[0]) bareCnjs.push(cm[0]);
+    }
+    const n = Math.min(bareIds.length, bareCnjs.length);
+    for (let i = 0; i < n; i++) pjeIdToCnj.set(bareIds[i], bareCnjs[i]);
+  }
+
+  let lastCnj = null;
+  const acordaoRe = /A\s*C\s*[OÓ]\s*R\s*D\s*[AÃ]\s*O/i;
+  // Regex principal: captura até "Relator." ou "Presidente."
+  const decideRe = /Decide\s+a\s+.{0,5000}?(?:Relator[a]?|Relatora|Presidente)\s*\./i;
+  // Fallback: alguns gabinetes não têm "Relator." após a decisão —
+  // captura "Decide a ... Turma ... [resultado]." até o primeiro ponto após a decisão
+  const decideFallbackRe = /Decide\s+a\s+[^.]{0,100}Turma[^.]*\./i;
+
+  const hasPjeMap = pjeIdToCnj.size > 0;
+
+  for (let i=0; i<lines.length; i++) {
+    const line = lines[i];
+
+    // Marcador de página: "Num. 455692016 - Pág. 2" → identifica o processo pela Id PJe
+    const npm = line.trim().match(numPageRe);
+    if (npm && pjeIdToCnj.has(npm[1])) {
+      lastCnj = pjeIdToCnj.get(npm[1]);
+      continue; // linha só contém o marcador, não tem ACÓRDÃO
+    }
+
+    // Atualiza lastCnj por CNJ embutido na linha SOMENTE se não temos o mapa pjeId→CNJ.
+    // Quando o mapa existe, usamos só os marcadores Num. para rastrear lastCnj —
+    // isso evita que citações jurisprudenciais com números CNJ-like sobrescrevam lastCnj.
+    if (!hasPjeMap) {
+      const cm = line.match(CNJ_RE);
+      if (cm && !indexLineRe.test(line.trim())) {
+        lastCnj = cm[0];
+      }
+      // Não faz continue: a mesma linha pode conter ACÓRDÃO (quando cada página é um blob)
+    }
+
+    if (acordaoRe.test(line) && lastCnj) {
+      const windowText = lines
+        .slice(i, Math.min(i + 40, lines.length))
+        .join(" ")
+        .replace(/\s+/g, " ")
+        .trim();
+      let dm = windowText.match(decideRe);
+      if (!dm) dm = windowText.match(decideFallbackRe);
+      if (dm) {
+        let decisao = dm[0]
+          .replace(/,?\s*nos termos do voto d[oa] Relator[a]?\.?/i, "")
+          .replace(/\s+/g, " ").trim();
+        if (!decisao.endsWith(".")) decisao += ".";
+        if (itemMap.has(lastCnj)) itemMap.get(lastCnj).resultado = decisao;
+      }
+    }
+  }
+
+  return { sinopseNumber, itemMap };
+}
+
+// ------------------ STEP 5: upload de sinopses ------------------
+let sinopseFiles = []; // { name, status:'ok'|'warn'|'error', sinopseNumber, itemMap, count, message }
+
+function renderSinopseList() {
+  const listEl = document.getElementById("sinopseList");
+  if (!sinopseFiles.length) { listEl.innerHTML = ""; return; }
+  listEl.innerHTML = sinopseFiles.map((f, idx) => {
+    const badge = f.status === "ok" ? `<span class="badge ok">Sinopse ${f.sinopseNumber} · ${f.count} processo(s)</span>`
+      : `<span class="badge ${f.status}">${f.message}</span>`;
+    const icon = f.status === "ok" ? "✅" : (f.status === "warn" ? "⚠️" : "❌");
+    return `<div class="multi-file-item ${f.status}">
+      <div class="mf-icon">${icon}</div>
+      <div class="mf-info"><div class="mf-name">${f.name}</div><div class="mf-detail">${badge}</div></div>
+      <button class="mf-remove" data-idx="${idx}" title="Remover">✕</button>
+    </div>`;
+  }).join("");
+  listEl.querySelectorAll(".mf-remove").forEach(btn => {
+    btn.addEventListener("click", () => {
+      sinopseFiles.splice(parseInt(btn.dataset.idx, 10), 1);
+      renderSinopseList();
+      updateSinopseStatus();
+    });
+  });
+}
+
+function updateSinopseStatus() {
+  const ok = sinopseFiles.filter(f => f.status === "ok");
+  const totalProc = ok.reduce((s,f) => s + f.count, 0);
+  const elSt = document.getElementById("statusSinopses");
+  if (!sinopseFiles.length) { elSt.style.display = "none"; return; }
+  if (ok.length) {
+    elSt.className = "status success"; elSt.style.display = "block";
+    elSt.textContent = `✓ ${ok.length} de ${sinopseFiles.length} arquivo(s) lido(s) com sucesso — ${totalProc} processo(s) localizado(s) no total.`;
+  } else {
+    elSt.className = "status error"; elSt.style.display = "block";
+    elSt.textContent = "Nenhum arquivo de sinopse pôde ser lido até agora.";
+  }
+}
+
+async function addSinopseFile(file) {
+  const entry = { name: file.name, status: "error", sinopseNumber: null, itemMap: new Map(), count: 0, message: "" };
+  sinopseFiles.push(entry);
+  renderSinopseList();
+  try {
+    const buf = await file.arrayBuffer();
+    const kind = sniffBytes(new Uint8Array(buf.slice(0,8)));
+    let lines = null;
+    if (kind === "doc-legacy") {
+      entry.message = "Formato .doc antigo não suportado — salve como .docx ou PDF e envie de novo";
+    } else if (kind === "pdf") {
+      lines = await readPdfLines(buf);
+    } else if (kind === "docx") {
+      lines = await readDocxParagraphTexts(buf);
+    } else {
+      entry.message = "Formato não reconhecido (use .pdf ou .docx)";
+    }
+    if (lines) {
+      const { sinopseNumber, itemMap } = parseSinopseLines(lines);
+      entry.sinopseNumber = sinopseNumber; entry.itemMap = itemMap; entry.count = itemMap.size;
+      entry.status = itemMap.size ? "ok" : "warn";
+      entry.message = itemMap.size ? "" : "Nenhum processo reconhecido neste arquivo";
+    }
+  } catch (err) {
+    entry.status = "error"; entry.message = "Erro ao ler: " + err.message;
+    console.error(err);
+  }
+  renderSinopseList();
+  updateSinopseStatus();
+  updateFinalButton();
+}
+
+function aggregateSinopseMatches() {
+  const map = new Map(); // cnj -> { sinopse, item, resultado, source }
+  for (const f of sinopseFiles) {
+    if (f.status !== "ok") continue;
+    for (const [cnj, val] of f.itemMap.entries()) {
+      if (!map.has(cnj)) map.set(cnj, { sinopse: f.sinopseNumber, item: val.item, resultado: val.resultado || "", source: f.name });
+    }
+  }
+  return map;
+}
+
+const dzSinopses = document.getElementById("dropZoneSinopses");
+const sinopseInput = document.getElementById("sinopseInput");
+dzSinopses.addEventListener("click", () => sinopseInput.click());
+dzSinopses.addEventListener("dragover", e => { e.preventDefault(); dzSinopses.classList.add("dragover"); });
+dzSinopses.addEventListener("dragleave", () => dzSinopses.classList.remove("dragover"));
+dzSinopses.addEventListener("drop", e => {
+  e.preventDefault(); dzSinopses.classList.remove("dragover");
+  [...e.dataTransfer.files].forEach(addSinopseFile);
+});
+sinopseInput.addEventListener("change", e => { [...e.target.files].forEach(addSinopseFile); sinopseInput.value = ""; });
+
+// ------------------ STEP 6: upload da prévia ------------------
+let previaFile = null;
+const dzPrevia = document.getElementById("dropZonePrevia");
+const previaInput = document.getElementById("previaInput");
+const previaFileNameEl = document.getElementById("previaFileName");
+dzPrevia.addEventListener("click", () => previaInput.click());
+dzPrevia.addEventListener("dragover", e => { e.preventDefault(); dzPrevia.classList.add("dragover"); });
+dzPrevia.addEventListener("dragleave", () => dzPrevia.classList.remove("dragover"));
+dzPrevia.addEventListener("drop", e => {
+  e.preventDefault(); dzPrevia.classList.remove("dragover");
+  if (e.dataTransfer.files.length) setPreviaFile(e.dataTransfer.files[0]);
+});
+previaInput.addEventListener("change", e => { if (e.target.files.length) setPreviaFile(e.target.files[0]); });
+
+function setPreviaFile(file) {
+  const elSt = document.getElementById("statusPrevia");
+  if (!file.name.match(/\.docx$/i)) {
+    elSt.className = "status error"; elSt.style.display = "block";
+    elSt.textContent = "Selecione um arquivo .docx válido (a prévia gerada no Passo 4).";
+    return;
+  }
+  previaFile = file;
+  previaFileNameEl.textContent = file.name;
+  dzPrevia.classList.add("loaded");
+  elSt.className = "status success"; elSt.style.display = "block";
+  elSt.textContent = `✓ "${file.name}" carregado.`;
+  updateFinalButton();
+}
+
+function updateFinalButton() {
+  document.getElementById("btnGenerateFinal").disabled = !previaFile;
+}
+
+// ------------------ STEP 7: gerar documento definitivo ------------------
+document.getElementById("btnGenerateFinal").addEventListener("click", async () => {
+  const btn = document.getElementById("btnGenerateFinal");
+  const elSt = document.getElementById("statusFinal");
+  btn.disabled = true;
+  elSt.className = "status info"; elSt.style.display = "block"; elSt.textContent = "Processando documento...";
+  try {
+    if (!sinopseFiles.length) {
+      elSt.className = "status info";
+      elSt.textContent = "Nenhuma sinopse foi anexada — todos os processos sairão como NÃO ENCONTRADO. Gerando ainda assim...";
+    }
+    const matches = aggregateSinopseMatches();
+    const buf = await previaFile.arrayBuffer();
+    const zip = await JSZip.loadAsync(buf);
+    const docFile = zip.file("word/document.xml");
+    if (!docFile) throw new Error("O arquivo enviado não é uma prévia .docx válida.");
+    const xmlText = await docFile.async("text");
+    const xmlDoc = new DOMParser().parseFromString(xmlText, "application/xml");
+    const paragraphs = xmlDoc.getElementsByTagNameNS(W_NS, "p");
+
+    function makeRun(text, colorVal, bold) {
+      const r = xmlDoc.createElementNS(W_NS, "w:r");
+      const rPr = xmlDoc.createElementNS(W_NS, "w:rPr");
+      const rFonts = xmlDoc.createElementNS(W_NS, "w:rFonts");
+      rFonts.setAttributeNS(W_NS, "w:ascii", "Arial"); rFonts.setAttributeNS(W_NS, "w:hAnsi", "Arial");
+      const sz = xmlDoc.createElementNS(W_NS, "w:sz"); sz.setAttributeNS(W_NS, "w:val", "24");
+      const color = xmlDoc.createElementNS(W_NS, "w:color"); color.setAttributeNS(W_NS, "w:val", colorVal);
+      rPr.appendChild(rFonts); rPr.appendChild(sz); rPr.appendChild(color);
+      if (bold) rPr.appendChild(xmlDoc.createElementNS(W_NS, "w:b"));
+      const wT = xmlDoc.createElementNS(W_NS, "w:t");
+      wT.setAttributeNS(XML_NS, "xml:space", "preserve");
+      wT.textContent = text;
+      r.appendChild(rPr); r.appendChild(wT);
+      return r;
+    }
+    function cleanRelator(text) {
+      return text
+        .replace(/^\d+\.\s*/, "")
+        .replace(/^O\s+/i, "")
+        .replace(/^EXM[OA]\.?\s+SRA?\.?\s*/i, "")
+        .trim();
+    }
+
+    // OAB pattern: aceita "OAB/UF 12.345", "OABUF12345", etc.
+    const OAB_RE = /OAB/i;
+    // Linha de advogado: começa com "Advogado"/"Adv.", ou contém "OAB",
+    // ou começa com "DR./DRA." (formato usado nas listas de sustentação oral).
+    const ADV_RE = /^Adv(?:ogad[oa])?[^:]*:|OAB|^DRA?\.?\s/i;
+    // Linha da parte representada por aquele advogado específico: "PELA/PELO/PELAS/PELOS ..."
+    // ou, quando a parte não foi localizada nos polos, "PARTE REPRESENTADA NÃO ENCONTRADA...".
+    const PARTY_RE = /^PEL[AO]S?\s+\S|^PARTE\s+REPRESENTADA\s+N[AÃ]O\s+ENCONTRADA/i;
+
+    let pendingCnj = null, pendingLine = "", currentRelator = "";
+    let pendingResultado = ""; // resultado do processo atual a ser inserido após a linha da parte
+    let awaitingPartyLine = false; // true logo após a linha do advogado, aguardando a linha "PELA/PELO..."
+    let total = 0, found = 0;
+    const notFound = [];
+
+    // Snapshot estático: vamos inserir novos <w:p> no documento, então não
+    // podemos iterar sobre a NodeList "ao vivo" de paragraphs.
+    const paragraphsArr = Array.from(paragraphs);
+
+    for (let i=0; i<paragraphsArr.length; i++) {
+      const p = paragraphsArr[i];
+      const tNodes = p.getElementsByTagNameNS(W_NS, "t");
+      let text = "";
+      for (let j=0;j<tNodes.length;j++) text += tNodes[j].textContent || "";
+
+      // Linha da parte (PELA/PELO...): inserir o resultado em parágrafo próprio, logo abaixo
+      if (awaitingPartyLine && PARTY_RE.test(text.trim())) {
+        // Novo parágrafo com "RESULTADO: <texto>", herdando a formatação (pPr) da linha da parte
+        const pPr = p.getElementsByTagNameNS(W_NS, "pPr")[0];
+        const resultPara = xmlDoc.createElementNS(W_NS, "w:p");
+        if (pPr) resultPara.appendChild(pPr.cloneNode(true));
+        resultPara.appendChild(makeRun("RESULTADO: ", "000000", true));
+        resultPara.appendChild(makeRun(pendingResultado, "000000", false));
+        p.parentNode.insertBefore(resultPara, p.nextSibling);
+
+        // 1 parágrafo em branco após o resultado = espaço para escrita manual pós-impressão
+        const emptyPara1 = xmlDoc.createElementNS(W_NS, "w:p");
+        if (pPr) emptyPara1.appendChild(pPr.cloneNode(true));
+        resultPara.parentNode.insertBefore(emptyPara1, resultPara.nextSibling);
+
+        pendingResultado = "";
+        awaitingPartyLine = false;
+        continue;
+      }
+
+      // Linha de advogado: apenas sinaliza que a PRÓXIMA linha (a da parte) deve receber o resultado
+      if (pendingResultado && !awaitingPartyLine && ADV_RE.test(text.trim())) {
+        awaitingPartyLine = true;
+        continue;
+      }
+
+      const cm = text.match(CNJ_RE);
+      if (cm) { pendingCnj = cm[0]; pendingLine = text.trim(); continue; }
+
+      const normText = text.replace(/\s+/g," ");
+      const isPlaceholder = /SINOPSE\s+ITEM/i.test(normText);
+      if (isPlaceholder && pendingCnj) {
+        // Se o item já está preenchido manualmente ("SINOPSE ITEM 5"), pula o processo:
+        // não sobrescreve o item nem busca/insere resultado.
+        const alreadyFilled = /SINOPSE\s+ITEM\s*\d/i.test(normText);
+        if (alreadyFilled) {
+          pendingCnj = null;
+          pendingResultado = "";
+          awaitingPartyLine = false;
+          continue;
+        }
+
+        total++;
+        const match = matches.get(pendingCnj);
+        pendingResultado = ""; // evita que um resultado não inserido "vaze" para o próximo processo
+        awaitingPartyLine = false;
+
+        if (match) {
+          found++;
+          // Apaga os runs antigos e reescreve mantendo a palavra SINOPSE
+          const runs2 = p.getElementsByTagNameNS(W_NS, "r");
+          for (let k = runs2.length - 1; k >= 0; k--) p.removeChild(runs2[k]);
+          p.appendChild(makeRun(`SINOPSE     ITEM ${match.item}`, "000000", false));
+          if (match.resultado) pendingResultado = match.resultado;
+        } else {
+          notFound.push({ cnj: pendingCnj, line: pendingLine, relator: cleanRelator(currentRelator) });
+          // Não encontrado: NÃO toca no parágrafo — "SINOPSE     ITEM" fica como estava
+        }
+        pendingCnj = null;
+        continue;
+      }
+
+      const trimmed = text.replace(/\s+/g, " ").trim();
+      if (trimmed && !/^_{5,}$/.test(trimmed)) currentRelator = trimmed;
+    }
+
+    const serialized = new XMLSerializer().serializeToString(xmlDoc);
+    zip.file("word/document.xml", serialized);
+    const blob = await zip.generateAsync({ type: "blob", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+
+    const dt = document.getElementById("dataSessao").value.replace(/\//g,".") || "lista";
+    const filename = `${dt} - LISTA COM RESULTADOS E ITENS.docx`;
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = filename; a.click();
+    URL.revokeObjectURL(url);
+
+    elSt.className = "status success";
+    elSt.textContent = `✓ "${filename}" gerado. ${found} de ${total} processo(s) preenchido(s) automaticamente.`;
+    renderReport(notFound, total, found);
+  } catch (err) {
+    elSt.className = "status error"; elSt.textContent = "Erro ao gerar: " + err.message;
+    console.error(err);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+function renderReport(notFound, total, found) {
+  const card = document.getElementById("cardReport");
+  const summary = document.getElementById("reportSummary");
+  const list = document.getElementById("nfList");
+  card.style.display = "block";
+  if (!notFound.length) {
+    summary.textContent = `✓ Todos os ${total} processo(s) foram localizados nas sinopses enviadas.`;
+    list.innerHTML = "";
+    return;
+  }
+  summary.textContent = `${notFound.length} de ${total} processo(s) NÃO foram encontrados em nenhuma sinopse enviada:`;
+  list.innerHTML = notFound.map(nf => `<div class="nf-item"><div class="nf-cnj">${nf.cnj}</div><div class="nf-line">${nf.line}</div><div class="nf-relator">Relator(a): ${nf.relator || "(não identificado)"}</div></div>`).join("");
+  showAlertModal("Atenção", `${notFound.length} processo(s) não encontrado(s) nas sinopses. Verifique a Etapa 8.`);
+}
+
+// ============================================================
+//  MODAL DE ALERTA (chama atenção do usuário)
+// ============================================================
+function showAlertModal(title, message) {
+  document.getElementById("alertTitle").textContent = title;
+  document.getElementById("alertMessage").textContent = message;
+  document.getElementById("alertOverlay").classList.add("show");
+}
+function hideAlertModal() {
+  document.getElementById("alertOverlay").classList.remove("show");
+}
+document.getElementById("alertBtnOk").addEventListener("click", hideAlertModal);
+document.getElementById("alertOverlay").addEventListener("click", (e) => {
+  if (e.target.id === "alertOverlay") hideAlertModal();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") hideAlertModal();
+});
+
 // ============================================================
 //  PERSISTÊNCIA DE CAMPOS (localStorage)
 // ============================================================
