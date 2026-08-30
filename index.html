@@ -154,6 +154,135 @@
     font-weight: 700; font-family: inherit; cursor: pointer; transition: all 0.2s;
   }
   .alert-modal .alert-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(183,28,28,0.35); }
+
+  .alert-modal .choice-btn {
+    display: block; width: calc(100% - 48px); margin: 0 24px 12px;
+    border: none; border-radius: 9px; padding: 13px; font-size: 14.5px;
+    font-weight: 700; font-family: inherit; cursor: pointer; transition: all 0.2s; color: white;
+  }
+  .alert-modal .choice-btn.primary { background: linear-gradient(135deg, #1a3a5c, #2c5f8a); }
+  .alert-modal .choice-btn.secondary { background: linear-gradient(135deg, #607d8b, #455a64); }
+  .alert-modal .choice-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(26,58,92,0.3); }
+  .alert-modal .choice-cancel {
+    display: block; width: 100%; margin: 0 0 22px; background: none; border: none;
+    color: #888; font-size: 13px; font-family: inherit; cursor: pointer; text-decoration: underline;
+  }
+  .alert-modal .choice-cancel:hover { color: #444; }
+  .alert-modal.wide { max-width: 520px; }
+  .alert-modal.wide .alert-message { text-align: left; }
+
+  /* ------------------------------------------------------------ */
+  /* Botão "Gerar Lista da Porta da Sala" (lançador em relevo)      */
+  /* ------------------------------------------------------------ */
+  .btn-porta-launcher {
+    position: fixed; top: 122px; right: 32px; z-index: 300;
+    padding: 13px 20px; font-family: inherit; font-size: 12.5px; font-weight: 700;
+    color: #1a3a5c; background: linear-gradient(145deg, #ffffff, #e4e8ef);
+    border: 1px solid #c7cfdb; border-radius: 10px; cursor: pointer;
+    box-shadow: 5px 5px 10px rgba(0,0,0,0.14), -4px -4px 9px rgba(255,255,255,0.85);
+    transition: all 0.15s;
+  }
+  .btn-porta-launcher:hover {
+    transform: translateY(-1px);
+    box-shadow: 6px 6px 12px rgba(0,0,0,0.18), -4px -4px 9px rgba(255,255,255,0.85);
+  }
+  .btn-porta-launcher:active {
+    transform: translateY(1px);
+    box-shadow: inset 3px 3px 6px rgba(0,0,0,0.18), inset -2px -2px 5px rgba(255,255,255,0.8);
+  }
+  @media (max-width: 900px) {
+    .btn-porta-launcher { position: static; display: block; width: calc(100% - 48px); margin: 20px auto 0; }
+  }
+
+  /* ------------------------------------------------------------ */
+  /* Modal "Lista da Porta da Sessão" (lógica do index COJU4)       */
+  /* ------------------------------------------------------------ */
+  .porta-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(20,20,30,0.55);
+    z-index: 9998; align-items: flex-start; justify-content: center;
+    padding: 40px 20px; overflow-y: auto;
+  }
+  .porta-overlay.show { display: flex; }
+  .porta-modal {
+    background: #f0f2f5; border-radius: 14px; max-width: 780px; width: 100%;
+    padding: 28px 32px 32px; box-shadow: 0 12px 40px rgba(0,0,0,0.35); position: relative;
+    font-family: 'Segoe UI', Tahoma, sans-serif; color: #1a1a2e;
+  }
+  .porta-close {
+    position: absolute; top: 18px; right: 20px; background: none; border: none;
+    font-size: 20px; color: #888; cursor: pointer; line-height: 1;
+  }
+  .porta-close:hover { color: #333; }
+  .porta-modal h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.02em; color: #1a3a5c; }
+  .porta-subtitle { font-size: 0.85rem; color: #6b7280; margin-bottom: 24px; }
+
+  .porta-drop-zone {
+    border: 2px dashed #c7cbd4; border-radius: 12px;
+    padding: 40px 24px; text-align: center; cursor: pointer;
+    transition: all 0.2s; background: #fff; position: relative;
+  }
+  .porta-drop-zone:hover, .porta-drop-zone.dragover { border-color: #3b5bdb; background: #f0f3ff; }
+  .porta-drop-zone.has-file { border-color: #2b8a3e; background: #f0faf3; }
+  .porta-drop-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .porta-drop-icon { font-size: 2.2rem; margin-bottom: 10px; }
+  .porta-drop-text { font-size: 0.92rem; color: #6b7280; }
+  .porta-drop-text strong { color: #3b5bdb; }
+  .porta-file-name { font-size: 0.88rem; font-weight: 600; color: #2b8a3e; margin-top: 8px; }
+
+  .porta-config-section { background: #fff; border-radius: 12px; padding: 18px 22px; margin-top: 16px; }
+  .porta-config-section label {
+    font-size: 0.8rem; font-weight: 600; color: #4b5563;
+    text-transform: uppercase; letter-spacing: 0.04em; display: block; margin-bottom: 8px;
+  }
+  .porta-config-row { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  .porta-config-row input[type="text"] { flex: 1; min-width: 200px; }
+  .porta-textarea {
+    width: 100%; padding: 10px 14px; border: 1.5px solid #d0d5dd; border-radius: 8px;
+    font-family: inherit; font-size: 13.5px; resize: vertical; outline: none;
+  }
+
+  .porta-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+  .porta-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 26px; font-family: inherit; font-size: 0.92rem;
+    font-weight: 700; border: none; border-radius: 10px; cursor: pointer; transition: all 0.15s;
+  }
+  .porta-btn-primary { background: #3b5bdb; color: #fff; }
+  .porta-btn-primary:hover:not(:disabled) { background: #2b4ac7; }
+  .porta-btn-primary:disabled { background: #c7cbd4; cursor: not-allowed; }
+  .porta-btn-clear { background: #fff; color: #b71c1c; border: 1.5px solid #ef9a9a; }
+  .porta-btn-clear:hover { background: #fdeeee; }
+  .porta-btn-download { background: #2b8a3e; color: #fff; margin-top: 16px; }
+  .porta-btn-download:hover { background: #237032; }
+
+  .porta-results { background: #fff; border-radius: 12px; padding: 22px; margin-top: 20px; display: none; }
+  .porta-results.visible { display: block; }
+  .porta-results h2 { font-size: 1.05rem; font-weight: 700; margin-bottom: 4px; color: #1a3a5c; }
+  .porta-stats { font-size: 0.82rem; color: #6b7280; margin-bottom: 14px; }
+
+  .porta-preview-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-bottom: 14px; }
+  .porta-preview-table th {
+    background: #d9e2f3; padding: 8px 10px; text-align: left; font-weight: 600;
+    border: 1px solid #bbb; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em;
+  }
+  .porta-preview-table td { padding: 6px 10px; border: 1px solid #ccc; vertical-align: top; white-space: pre-line; word-break: break-all; }
+  .porta-preview-table tr:nth-child(even) td { background: #f8f9fb; }
+  .porta-section-header-row td { background: #eef1f6 !important; font-weight: 700; text-align: center; font-size: 0.8rem; color: #1a1a2e; }
+
+  .porta-log { margin-top: 10px; padding: 12px 16px; background: #fef9e7; border-radius: 8px; font-size: 0.78rem; color: #92400e; display: none; max-height: 200px; overflow-y: auto; }
+  .porta-log.visible { display: block; }
+  .porta-log p { margin-bottom: 4px; }
+
+  .porta-alert-seq { display: none; padding: 12px 16px; background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; font-size: 0.82rem; color: #991b1b; font-weight: 600; margin-bottom: 12px; }
+  .porta-alert-seq.visible { display: block; }
+  .porta-alert-seq p { margin-bottom: 4px; }
+
+  .porta-spinner {
+    display: inline-block; width: 16px; height: 16px;
+    border: 2.5px solid rgba(255,255,255,0.3); border-top-color: #fff;
+    border-radius: 50%; animation: portaSpin 0.6s linear infinite;
+  }
+  @keyframes portaSpin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
@@ -167,10 +296,41 @@
   </div>
 </div>
 
-<div class="header">
-  <h1>PRÉVIA DE SUSTENTAÇÕES ORAIS - VERSÃO 1.6</h1>
-  <p>Gerador automático de lista — TRF1</p>
+<div class="alert-overlay" id="modeChoiceOverlay">
+  <div class="alert-modal" style="border-top-color:#1a3a5c">
+    <div class="alert-icon">📋</div>
+    <div class="alert-title" style="color:#1a3a5c">O que deseja capturar das sinopses?</div>
+    <div class="alert-message">Escolha se a Lista Definitiva deve trazer apenas o número do item de cada processo, ou também o resultado do julgamento extraído das sinopses.</div>
+    <button class="choice-btn primary" id="btnModeItensResultado">Itens + Resultado</button>
+    <button class="choice-btn secondary" id="btnModeItensOnly">Somente os Itens</button>
+    <button class="choice-cancel" id="btnModeCancel">Cancelar</button>
+  </div>
 </div>
+
+<div class="alert-overlay" id="resultReminderOverlay">
+  <div class="alert-modal wide" style="border-top-color:#1a3a5c">
+    <div class="alert-icon">💡</div>
+    <div class="alert-title" style="color:#1a3a5c">Lembrete Importante</div>
+    <div class="alert-message">
+      <strong>LEMBRETE:</strong> a precisão da captura de resultados é, em média, de <strong>90%</strong>.<br><br>
+      <strong>Por que não é 100%?</strong><br><br>
+      1 – A forma como cada gabinete gera ou edita a sinopse pode falhar a captura, não sendo possível prever todas as hipóteses.<br><br>
+      2 – Resultados que começam em uma página e terminam na seguinte (quebras de página) fazem com que informações adicionais desnecessárias sejam inseridas no meio do resultado.<br><br>
+      Assim, é necessário conferir os <strong>resultados</strong> inseridos na lista de sustentação oral manualmente. Custo compensado por toda a automatização gerada pelo ORALIZE.<br><br>
+      <span style="color:#c62828">Caso prefira, há também a <strong>opção</strong> de não capturar os resultados.</span>
+    </div>
+    <button class="choice-btn primary" id="btnReminderContinuar">Continuar com Itens + Resultado</button>
+    <button class="choice-btn secondary" id="btnReminderSomenteItens">Somente os Itens</button>
+    <button class="choice-cancel" id="btnReminderCancel">Cancelar</button>
+  </div>
+</div>
+
+<div class="header">
+  <h1>PRÉVIA DE SUSTENTAÇÕES ORAIS - COJU4</h1>
+  <p>Transforma o excel do ORALIZE na lista definitiva de sustentações orais.</p>
+</div>
+
+<button class="btn-porta-launcher" id="btnPortaLauncher" type="button">🚪 Gerar Lista da Porta da Sala</button>
 
 <div class="container">
 
@@ -201,6 +361,7 @@
       <input type="text" id="desemb3" placeholder="3º Desembargador Federal (ex: Pedro Braga Filho)" style="margin-bottom:8px">
       <textarea id="juizAux" placeholder="Juízes Federais auxiliares/convocados (opcional, um por linha)" rows="2" style="margin-bottom:8px"></textarea>
       <input type="text" id="prr" placeholder="PRR (ex: Nara Soares Dantas)" style="margin-bottom:8px">
+      <input type="text" id="secretario" placeholder="Secretário(a) da Sessão">
     </div>
   </div>
 
@@ -265,7 +426,7 @@
   <!-- STEP 7: Generate Final -->
   <div class="card">
     <h2><span class="num">7</span> Gerar Documento Word — Planilha Definitiva</h2>
-    <button class="btn btn-primary" id="btnGenerateFinal" disabled>📄 Gerar Planilha Definitiva (.docx)</button>
+    <button class="btn btn-primary" id="btnGenerateFinal" disabled>📄 Gerar Lista Definitiva (.docx)</button>
     <div class="status" id="statusFinal"></div>
   </div>
 
@@ -279,6 +440,50 @@
 </div>
 
 <div class="footer">Ferramenta offline — funciona sem internet após o primeiro carregamento.</div>
+
+<!-- ============================================================ -->
+<!--  MODAL: Lista da Porta da Sessão (lógica do index COJU4)       -->
+<!-- ============================================================ -->
+<div class="porta-overlay" id="portaOverlay">
+  <div class="porta-modal">
+    <button class="porta-close" id="portaClose" type="button" title="Fechar">✕</button>
+    <h1>Lista da Porta da Sessão</h1>
+    <p class="porta-subtitle">Envie o Word de sustentações orais → receba a tabela (Nº | Processo | Advogado)</p>
+
+    <div class="porta-drop-zone" id="portaDropZone">
+      <input type="file" id="portaFileInput" accept=".docx">
+      <div class="porta-drop-icon">📄</div>
+      <p class="porta-drop-text">Arraste o <strong>.docx</strong> aqui ou clique para selecionar</p>
+      <p class="porta-file-name" id="portaFileName"></p>
+    </div>
+
+    <div class="porta-config-section">
+      <label>Cabeçalho do documento</label>
+      <div class="porta-config-row">
+        <input type="text" id="portaInputTitulo" value="LISTA DE SUSTENTAÇÕES ORAIS" placeholder="Título">
+        <input type="text" id="portaInputSessao" value="" placeholder="Ex: Sessão de 30/06/2026 — 7ª Turma">
+      </div>
+      <label style="margin-top:16px">Mensagem no topo do documento</label>
+      <textarea id="portaInputMensagem" rows="3" class="porta-textarea">Localize seu nome e verifique a sua posição na ordem da lista de sustentação oral abaixo. Após, dirija-se ao secretário para confirmar vossa presença, informando a ordem sequencial identificada.</textarea>
+    </div>
+
+    <div class="porta-actions">
+      <button class="porta-btn porta-btn-primary" id="portaBtnProcessar" disabled>Processar</button>
+      <button class="porta-btn porta-btn-clear" id="portaBtnLimpar" type="button">Limpar Dados</button>
+    </div>
+
+    <div class="porta-results" id="portaResults">
+      <h2>Pré-visualização</h2>
+      <p class="porta-stats" id="portaStats"></p>
+      <div class="porta-alert-seq" id="portaAlertSeq"></div>
+      <div style="overflow-x:auto;">
+        <table class="porta-preview-table" id="portaPreviewTable"></table>
+      </div>
+      <div class="porta-log" id="portaLogBox"></div>
+      <button class="porta-btn porta-btn-download" id="portaBtnDownload">⬇ Baixar .docx</button>
+    </div>
+  </div>
+</div>
 
 <script src="jszip.min.js"></script>
 <script src="docx.iife.js"></script>
@@ -902,6 +1107,7 @@ function generateWord(data) {
   const juizAuxText = document.getElementById("juizAux").value.trim();
   const juizAuxLines = juizAuxText ? juizAuxText.split("\n").filter(l => l.trim()) : [];
   const prr = document.getElementById("prr").value.trim();
+  const secretario = document.getElementById("secretario").value.trim();
 
   const children = [];
   children.push(headerP(`ÓRGÃO JULGADOR: ${turma.toUpperCase()}`));
@@ -952,7 +1158,7 @@ function generateWord(data) {
     const prrTitle = getAdvTitle(prr);
     children.push(blackP(`PRR: ${prrTitle.title === "DRA." ? "Dra." : "Dr."} ${toTitleCase(prr)}`));
   }
-  children.push(blackP("Secretário: Higo Soares Barboza"));
+  if (secretario) children.push(blackP(`Secretário(a): ${toTitleCase(secretario)}`));
 
   return Packer.toBlob(new Document({
     sections: [{
@@ -1403,16 +1609,53 @@ function updateFinalButton() {
 }
 
 // ------------------ STEP 7: gerar documento definitivo ------------------
-document.getElementById("btnGenerateFinal").addEventListener("click", async () => {
+// Ao clicar, primeiro pergunta o que capturar das sinopses (item apenas, ou item + resultado)
+// O botão não fica travado, mas sem sinopse carregada a geração não pode prosseguir de verdade.
+document.getElementById("btnGenerateFinal").addEventListener("click", () => {
+  if (!sinopseFiles.length) {
+    showAlertModal("Nenhuma sinopse carregada", "Anexe ao menos uma sinopse na Etapa 5 antes de gerar a Lista Definitiva. Sem sinopse, não há como localizar o item/resultado de cada processo.");
+    return;
+  }
+  document.getElementById("modeChoiceOverlay").classList.add("show");
+});
+document.getElementById("btnModeCancel").addEventListener("click", () => {
+  document.getElementById("modeChoiceOverlay").classList.remove("show");
+});
+document.getElementById("modeChoiceOverlay").addEventListener("click", (e) => {
+  if (e.target.id === "modeChoiceOverlay") document.getElementById("modeChoiceOverlay").classList.remove("show");
+});
+document.getElementById("btnModeItensResultado").addEventListener("click", () => {
+  document.getElementById("modeChoiceOverlay").classList.remove("show");
+  document.getElementById("resultReminderOverlay").classList.add("show");
+});
+document.getElementById("btnModeItensOnly").addEventListener("click", () => {
+  document.getElementById("modeChoiceOverlay").classList.remove("show");
+  runGenerateFinal("itensOnly");
+});
+
+// Lembrete de precisão exibido antes de gerar com captura de resultados
+document.getElementById("btnReminderContinuar").addEventListener("click", () => {
+  document.getElementById("resultReminderOverlay").classList.remove("show");
+  runGenerateFinal("itensResultado");
+});
+document.getElementById("btnReminderSomenteItens").addEventListener("click", () => {
+  document.getElementById("resultReminderOverlay").classList.remove("show");
+  runGenerateFinal("itensOnly");
+});
+document.getElementById("btnReminderCancel").addEventListener("click", () => {
+  document.getElementById("resultReminderOverlay").classList.remove("show");
+});
+document.getElementById("resultReminderOverlay").addEventListener("click", (e) => {
+  if (e.target.id === "resultReminderOverlay") document.getElementById("resultReminderOverlay").classList.remove("show");
+});
+
+async function runGenerateFinal(captureMode) {
   const btn = document.getElementById("btnGenerateFinal");
   const elSt = document.getElementById("statusFinal");
   btn.disabled = true;
   elSt.className = "status info"; elSt.style.display = "block"; elSt.textContent = "Processando documento...";
   try {
-    if (!sinopseFiles.length) {
-      elSt.className = "status info";
-      elSt.textContent = "Nenhuma sinopse foi anexada — todos os processos sairão como NÃO ENCONTRADO. Gerando ainda assim...";
-    }
+    // (a exigência de sinopse já é checada no clique do botão, antes de abrir o pop-up de escolha)
     const matches = aggregateSinopseMatches();
     const buf = await previaFile.arrayBuffer();
     const zip = await JSZip.loadAsync(buf);
@@ -1523,7 +1766,7 @@ document.getElementById("btnGenerateFinal").addEventListener("click", async () =
           const runs2 = p.getElementsByTagNameNS(W_NS, "r");
           for (let k = runs2.length - 1; k >= 0; k--) p.removeChild(runs2[k]);
           p.appendChild(makeRun(`SINOPSE     ITEM ${match.item}`, "000000", false));
-          if (match.resultado) pendingResultado = match.resultado;
+          if (captureMode === "itensResultado" && match.resultado) pendingResultado = match.resultado;
         } else {
           notFound.push({ cnj: pendingCnj, line: pendingLine, relator: cleanRelator(currentRelator) });
           // Não encontrado: NÃO toca no parágrafo — "SINOPSE     ITEM" fica como estava
@@ -1541,7 +1784,9 @@ document.getElementById("btnGenerateFinal").addEventListener("click", async () =
     const blob = await zip.generateAsync({ type: "blob", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
 
     const dt = document.getElementById("dataSessao").value.replace(/\//g,".") || "lista";
-    const filename = `${dt} - LISTA COM RESULTADOS E ITENS.docx`;
+    const filename = captureMode === "itensResultado"
+      ? `${dt} - LISTA COM RESULTADOS E ITENS.docx`
+      : `${dt} - LISTA COM ITENS.docx`;
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a"); a.href = url; a.download = filename; a.click();
     URL.revokeObjectURL(url);
@@ -1555,7 +1800,7 @@ document.getElementById("btnGenerateFinal").addEventListener("click", async () =
   } finally {
     btn.disabled = false;
   }
-});
+}
 
 function renderReport(notFound, total, found) {
   const card = document.getElementById("cardReport");
@@ -1588,14 +1833,18 @@ document.getElementById("alertOverlay").addEventListener("click", (e) => {
   if (e.target.id === "alertOverlay") hideAlertModal();
 });
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") hideAlertModal();
+  if (e.key === "Escape") {
+    hideAlertModal();
+    document.getElementById("modeChoiceOverlay").classList.remove("show");
+    document.getElementById("resultReminderOverlay").classList.remove("show");
+  }
 });
 
 // ============================================================
 //  PERSISTÊNCIA DE CAMPOS (localStorage)
 // ============================================================
 const STORAGE_KEY = "previa_sustentacoes_campos";
-const PERSIST_FIELDS = ["turma","dataSessao","presidente","desemb2","desemb3","juizAux","prr","agrupamento"];
+const PERSIST_FIELDS = ["turma","dataSessao","presidente","desemb2","desemb3","juizAux","prr","secretario","agrupamento"];
 
 function saveFields() {
   const data = {};
@@ -1627,6 +1876,476 @@ for (const id of PERSIST_FIELDS) {
   if (el) el.addEventListener("input", saveFields);
 }
 
+</script>
+
+<!-- ============================================================ -->
+<!--  SCRIPT: Lista da Porta da Sessão (lógica portada de index COJU4) -->
+<!-- ============================================================ -->
+<script>
+(function() {
+
+  // ─── LIB CHECK ───
+  var portaDropZoneEl = document.getElementById('portaDropZone');
+  var missing = [];
+  if (typeof JSZip === 'undefined') missing.push('jszip.min.js');
+  if (typeof docx === 'undefined') missing.push('docx.iife.js');
+  if (missing.length) {
+    portaDropZoneEl.innerHTML =
+      '<p style="color:#c0392b;font-weight:600;padding:20px;text-align:center;line-height:1.6;">Bibliotecas não encontradas: ' + missing.join(', ') +
+      '<br><small>Coloque os arquivos na mesma pasta do HTML e recarregue.</small></p>';
+    document.getElementById('portaBtnProcessar').disabled = true;
+    return;
+  }
+
+  // ─── STATE ───
+  var loadedFile = null;
+  var parsedData = null;
+  var generatedBlob = null;
+
+  // ─── DOM ───
+  var launcher = document.getElementById('btnPortaLauncher');
+  var overlay = document.getElementById('portaOverlay');
+  var closeBtn = document.getElementById('portaClose');
+  var dropZone = portaDropZoneEl;
+  var fileInput = document.getElementById('portaFileInput');
+  var fileName = document.getElementById('portaFileName');
+  var btnProcessar = document.getElementById('portaBtnProcessar');
+  var btnLimpar = document.getElementById('portaBtnLimpar');
+  var btnDownload = document.getElementById('portaBtnDownload');
+  var results = document.getElementById('portaResults');
+  var stats = document.getElementById('portaStats');
+  var previewTable = document.getElementById('portaPreviewTable');
+  var logBox = document.getElementById('portaLogBox');
+  var alertSeq = document.getElementById('portaAlertSeq');
+  var inputTitulo = document.getElementById('portaInputTitulo');
+  var inputSessao = document.getElementById('portaInputSessao');
+  var inputMensagem = document.getElementById('portaInputMensagem');
+
+  // ─── ABRIR / FECHAR MODAL ───
+  launcher.addEventListener('click', function() { overlay.classList.add('show'); });
+  closeBtn.addEventListener('click', function() { overlay.classList.remove('show'); });
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.classList.remove('show'); });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') overlay.classList.remove('show'); });
+
+  // ─── FILE HANDLING ───
+  dropZone.addEventListener('dragover', function(e) { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone.addEventListener('dragleave', function() { dropZone.classList.remove('dragover'); });
+  dropZone.addEventListener('drop', function(e) {
+    e.preventDefault(); dropZone.classList.remove('dragover');
+    if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener('change', function() { if (fileInput.files.length) handleFile(fileInput.files[0]); });
+
+  function handleFile(file) {
+    if (!file.name.endsWith('.docx')) { alert('Selecione um arquivo .docx'); return; }
+    loadedFile = file;
+    fileName.textContent = '✓ ' + file.name;
+    dropZone.classList.add('has-file');
+    btnProcessar.disabled = false;
+    results.classList.remove('visible');
+
+    var dateMatch = file.name.match(/(\d{2})[_.\-](\d{2})[_.\-](\d{2,4})/);
+    if (dateMatch && !inputSessao.value) {
+      var d = dateMatch[1], m = dateMatch[2], y = dateMatch[3];
+      if (y.length === 2) y = '20' + y;
+      inputSessao.value = 'Sessão de ' + d + '/' + m + '/' + y + ' — 7ª Turma';
+    }
+  }
+
+  // ─── LIMPAR DADOS ───
+  btnLimpar.addEventListener('click', function() {
+    loadedFile = null;
+    parsedData = null;
+    generatedBlob = null;
+    fileInput.value = '';
+    fileName.textContent = '';
+    dropZone.classList.remove('has-file');
+    inputSessao.value = '';
+    btnProcessar.disabled = true;
+    btnProcessar.textContent = 'Processar';
+    results.classList.remove('visible');
+    previewTable.innerHTML = '';
+    stats.textContent = '';
+    logBox.innerHTML = '';
+    logBox.classList.remove('visible');
+    alertSeq.innerHTML = '';
+    alertSeq.classList.remove('visible');
+  });
+
+  // ─── DOCX READER (JSZip) ───
+  async function extractTextFromDocx(arrayBuffer) {
+    var zip = await JSZip.loadAsync(arrayBuffer);
+    var xmlFile = zip.file('word/document.xml');
+    if (!xmlFile) throw new Error('Arquivo .docx inválido (word/document.xml não encontrado)');
+    var xmlStr = await xmlFile.async('string');
+
+    // Extração via regex — mais robusto que DOMParser com namespaces do Word
+    var lines = [];
+    var paraRegex = /<w:p[\s>][\s\S]*?<\/w:p>/g;
+    var paraMatch;
+    while ((paraMatch = paraRegex.exec(xmlStr)) !== null) {
+      var paraXml = paraMatch[0];
+      var textRegex = /<w:t[^>]*>([^<]*)<\/w:t>/g;
+      var textMatch;
+      var line = '';
+      while ((textMatch = textRegex.exec(paraXml)) !== null) {
+        line += textMatch[1];
+      }
+      lines.push(line);
+    }
+
+    return lines.join('\n');
+  }
+
+  // ─── PARSER ───
+  function extractOriginalNumber(cleanBlock) {
+    var blockLines = cleanBlock.split('\n');
+    // Caso 1: primeira linha não-vazia começa com "N. EXM" ou "N. SR"
+    for (var i = 0; i < Math.min(blockLines.length, 5); i++) {
+      var line = blockLines[i].trim();
+      if (!line) continue;
+      var match = line.match(/^(\d+)\.\s+(?:EXM|SR)/i);
+      if (match) return parseInt(match[1]);
+      break;
+    }
+    // Caso 2: sub-itens "N.M APELAÇÃO/MANDADO/AÇÃO/AGRAVO/EMBARG/REMESSA"
+    for (var j = 0; j < blockLines.length; j++) {
+      var line2 = blockLines[j].trim();
+      var subMatch = line2.match(/^(\d+)\.\d+\s+(?:APELA|MANDADO|AÇÃO|REMESSA|AGRAVO|EMBARG)/i);
+      if (subMatch) return parseInt(subMatch[1]);
+    }
+    return null;
+  }
+
+  function parseText(rawText) {
+    var warnings = [];
+    var seqWarnings = [];
+    var lines = rawText.split('\n');
+
+    var sectionIStart = -1, sectionIIStart = -1, participantesStart = -1;
+    for (var i = 0; i < lines.length; i++) {
+      var l = lines[i].replace(/\*/g, '').trim();
+      if (/^I\s*[–\-]\s*PEDIDOS?\s+DE\s+SUSTENTA/i.test(l)) sectionIStart = i;
+      else if (/^II\s*[–\-]\s*PEDIDOS?\s+DE\s+PREFER/i.test(l)) sectionIIStart = i;
+      else if (/PARTICIPANTES\s+DA\s+SESS/i.test(l)) participantesStart = i;
+    }
+
+    var endLine = participantesStart > 0 ? participantesStart : lines.length;
+    var sectionsConfig = [];
+
+    if (sectionIStart >= 0) {
+      var endI = sectionIIStart > 0 ? sectionIIStart : endLine;
+      sectionsConfig.push({ title: 'I – PEDIDOS DE SUSTENTAÇÃO ORAL', startLine: sectionIStart + 1, endLine: endI });
+    }
+    if (sectionIIStart >= 0) {
+      sectionsConfig.push({ title: 'II – PEDIDOS DE PREFERÊNCIA SEM SUSTENTAÇÃO ORAL', startLine: sectionIIStart + 1, endLine: endLine });
+    }
+    if (sectionsConfig.length === 0) {
+      sectionsConfig.push({ title: 'SUSTENTAÇÕES ORAIS', startLine: 0, endLine: lines.length });
+    }
+
+    var result = { sections: [] };
+
+    for (var s = 0; s < sectionsConfig.length; s++) {
+      var sec = sectionsConfig[s];
+      var sectionText = lines.slice(sec.startLine, sec.endLine).join('\n');
+      var blocks = sectionText.split(/_{5,}/);
+      var items = [];
+
+      for (var b = 0; b < blocks.length; b++) {
+        var trimmed = blocks[b].trim();
+        if (!trimmed) continue;
+        var clean = trimmed.replace(/\*/g, '').trim();
+        if (/^IMPEDIMENTO/i.test(clean)) continue;
+        if (/^PARTICIPANTES/i.test(clean)) continue;
+        if (!clean) continue;
+
+        var procMatches = [];
+        var m;
+        var procRe = /\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}/g;
+        while ((m = procRe.exec(clean)) !== null) procMatches.push(m[0]);
+        if (procMatches.length === 0) continue;
+
+        var advNames = [];
+        var blockLines = clean.split('\n');
+        for (var k = 0; k < blockLines.length; k++) {
+          var lineTrim = blockLines[k].replace(/\*/g, '').trim();
+          if (/IMPEDIMENTO/i.test(lineTrim)) continue;
+          var advLine = lineTrim.match(/(?:^\d+\)\s*)?DR[A]?\.\s*(.+)/i);
+          if (advLine) {
+            var name = advLine[1].trim();
+            name = name.replace(/\s*[–\-]\s*(?:OAB.*|OB\/.*|Procurad.*|\d+[\-\.].*|NÃO\s+IDENT.*)$/i, '').trim();
+            name = name.replace(/\s*\(PRESENCIAL\).*$/i, '').trim();
+            name = name.replace(/\s*\(FAVORÁVEL.*$/i, '').trim();
+            name = name.replace(/\s*\*+\s*/g, '').trim();
+            name = name.replace(/\s*[–\-]\s*$/, '').trim();
+            if (name) advNames.push(name);
+          }
+        }
+
+        if (advNames.length === 0) {
+          warnings.push('Bloco sem advogado (processo ' + procMatches[0] + '). Inserido como "NÃO IDENTIFICADO".');
+          advNames.push('NÃO IDENTIFICADO');
+        }
+
+        items.push({ proc: procMatches.join('\n'), advs: advNames, origNum: extractOriginalNumber(clean) });
+      }
+
+      // ─── VALIDAÇÃO DE SEQUÊNCIA ORIGINAL ───
+      var origNums = items.map(function(it) { return it.origNum; }).filter(function(n) { return n !== null; });
+      if (origNums.length > 0) {
+        // Duplicados
+        var counts = {};
+        for (var d = 0; d < origNums.length; d++) {
+          counts[origNums[d]] = (counts[origNums[d]] || 0) + 1;
+        }
+        for (var num in counts) {
+          if (counts[num] > 1) {
+            seqWarnings.push('[' + sec.title.split('–')[0].trim() + '] Número duplicado no documento original: item ' + num + ' aparece ' + counts[num] + ' vezes.');
+          }
+        }
+        // Saltos
+        var unique = [];
+        var seen = {};
+        for (var u = 0; u < origNums.length; u++) {
+          if (!seen[origNums[u]]) { unique.push(origNums[u]); seen[origNums[u]] = true; }
+        }
+        unique.sort(function(a, b) { return a - b; });
+        for (var g = 1; g < unique.length; g++) {
+          var expected = unique[g - 1] + 1;
+          if (unique[g] !== expected) {
+            var saltados = [];
+            for (var x = expected; x < unique[g]; x++) saltados.push(x);
+            seqWarnings.push('[' + sec.title.split('–')[0].trim() + '] Numeração saltada: do item ' + unique[g - 1] + ' para ' + unique[g] + ' (faltando: ' + saltados.join(', ') + ').');
+          }
+        }
+      }
+
+      result.sections.push({ title: sec.title, items: items });
+    }
+
+    return { data: result, warnings: warnings, seqWarnings: seqWarnings };
+  }
+
+  // ─── PREVIEW ───
+  function renderPreview(data) {
+    var html = '<thead><tr><th style="width:50px">Nº</th><th>Processo</th><th>Advogado(a)</th></tr></thead><tbody>';
+    var totalItems = 0;
+
+    for (var s = 0; s < data.sections.length; s++) {
+      var sec = data.sections[s];
+      html += '<tr class="porta-section-header-row"><td colspan="3">' + sec.title + '</td></tr>';
+      for (var i = 0; i < sec.items.length; i++) {
+        var item = sec.items[i];
+        totalItems++;
+        html += '<tr>' +
+          '<td style="text-align:center">' + (i + 1) + '</td>' +
+          '<td>' + item.proc.replace(/\n/g, '<br>') + '</td>' +
+          '<td>' + item.advs.join('<br>') + '</td>' +
+          '</tr>';
+      }
+    }
+
+    html += '</tbody>';
+    previewTable.innerHTML = html;
+    stats.textContent = totalItems + ' processos encontrados em ' + data.sections.length + ' seção(ões)';
+  }
+
+  // ─── DOCX GENERATION ───
+  function generatePortaDocx(data) {
+    var PDocument = docx.Document;
+    var PPacker = docx.Packer;
+    var PParagraph = docx.Paragraph;
+    var PTextRun = docx.TextRun;
+    var PTable = docx.Table;
+    var PTableRow = docx.TableRow;
+    var PTableCell = docx.TableCell;
+    var PAlignmentType = docx.AlignmentType;
+    var PBorderStyle = docx.BorderStyle;
+    var PWidthType = docx.WidthType;
+    var PShadingType = docx.ShadingType;
+
+    var border = { style: PBorderStyle.SINGLE, size: 1, color: "000000" };
+    var borders = { top: border, bottom: border, left: border, right: border };
+    var cellMargins = { top: 40, bottom: 40, left: 80, right: 80 };
+
+    function makeTextRuns(lines) {
+      var runs = [];
+      for (var i = 0; i < lines.length; i++) {
+        if (i > 0) runs.push(new PTextRun({ break: 1, text: "" }));
+        runs.push(new PTextRun({ text: lines[i], font: "Arial", size: 20 }));
+      }
+      return runs;
+    }
+
+    function headerCell(text, width) {
+      return new PTableCell({
+        borders: borders,
+        width: { size: width, type: PWidthType.DXA },
+        shading: { fill: "D9E2F3", type: PShadingType.CLEAR },
+        margins: cellMargins,
+        verticalAlign: "center",
+        children: [new PParagraph({
+          alignment: PAlignmentType.CENTER,
+          children: [new PTextRun({ text: text, bold: true, font: "Arial", size: 20 })]
+        })]
+      });
+    }
+
+    function dataRow(num, proc, advs) {
+      var procLines = proc.split("\n");
+      return new PTableRow({
+        children: [
+          new PTableCell({
+            borders: borders, width: { size: 800, type: PWidthType.DXA }, margins: cellMargins,
+            verticalAlign: "center",
+            children: [new PParagraph({
+              alignment: PAlignmentType.CENTER,
+              children: [new PTextRun({ text: String(num), font: "Arial", size: 20 })]
+            })]
+          }),
+          new PTableCell({
+            borders: borders, width: { size: 4200, type: PWidthType.DXA }, margins: cellMargins,
+            children: [new PParagraph({ children: makeTextRuns(procLines) })]
+          }),
+          new PTableCell({
+            borders: borders, width: { size: 4360, type: PWidthType.DXA }, margins: cellMargins,
+            children: [new PParagraph({ children: makeTextRuns(advs) })]
+          }),
+        ]
+      });
+    }
+
+    function buildTable(items) {
+      var rows = [
+        new PTableRow({ children: [
+          headerCell("Nº", 800),
+          headerCell("PROCESSO", 4200),
+          headerCell("ADVOGADO(A)", 4360),
+        ]})
+      ];
+      for (var i = 0; i < items.length; i++) {
+        rows.push(dataRow(i + 1, items[i].proc, items[i].advs));
+      }
+      return new PTable({
+        width: { size: 9360, type: PWidthType.DXA },
+        columnWidths: [800, 4200, 4360],
+        rows: rows
+      });
+    }
+
+    var children = [];
+
+    var titulo = inputTitulo.value.trim() || 'LISTA DE SUSTENTAÇÕES ORAIS';
+    children.push(new PParagraph({
+      alignment: PAlignmentType.CENTER,
+      spacing: { after: 100 },
+      children: [new PTextRun({ text: titulo, bold: true, font: "Arial", size: 24 })]
+    }));
+
+    var sessao = inputSessao.value.trim();
+    if (sessao) {
+      children.push(new PParagraph({
+        alignment: PAlignmentType.CENTER,
+        spacing: { after: 300 },
+        children: [new PTextRun({ text: sessao, font: "Arial", size: 20 })]
+      }));
+    }
+
+    var mensagem = inputMensagem.value.trim();
+    if (mensagem) {
+      children.push(new PParagraph({
+        alignment: PAlignmentType.CENTER,
+        spacing: { before: 200, after: 300 },
+        children: [new PTextRun({ text: mensagem, bold: true, underline: { type: "single" }, font: "Arial", size: 20 })]
+      }));
+    }
+
+    for (var s = 0; s < data.sections.length; s++) {
+      var sec = data.sections[s];
+      children.push(new PParagraph({
+        spacing: { before: 300, after: 200 },
+        children: [new PTextRun({ text: sec.title, bold: true, font: "Arial", size: 22 })]
+      }));
+      children.push(buildTable(sec.items));
+    }
+
+    var doc = new PDocument({
+      styles: { default: { document: { run: { font: "Arial", size: 20 } } } },
+      sections: [{
+        properties: {
+          page: {
+            size: { width: 12240, height: 15840 },
+            margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 }
+          }
+        },
+        children: children
+      }]
+    });
+
+    return PPacker.toBlob(doc);
+  }
+
+  // ─── DOWNLOAD (sem FileSaver) ───
+  function downloadPortaBlob(blob, filename) {
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+  }
+
+  // ─── FLUXO PRINCIPAL ───
+  btnProcessar.addEventListener('click', async function() {
+    if (!loadedFile) return;
+
+    btnProcessar.disabled = true;
+    btnProcessar.innerHTML = '<span class="porta-spinner"></span> Processando...';
+    logBox.innerHTML = '';
+    logBox.classList.remove('visible');
+    alertSeq.innerHTML = '';
+    alertSeq.classList.remove('visible');
+
+    try {
+      var arrayBuffer = await loadedFile.arrayBuffer();
+      var rawText = await extractTextFromDocx(arrayBuffer);
+
+      var parsed = parseText(rawText);
+      parsedData = parsed.data;
+
+      if (parsed.seqWarnings.length) {
+        alertSeq.innerHTML = parsed.seqWarnings.map(function(w) { return '<p>⚠ ' + w + '</p>'; }).join('');
+        alertSeq.classList.add('visible');
+      }
+
+      if (parsed.warnings.length) {
+        logBox.innerHTML = parsed.warnings.map(function(w) { return '<p>⚠ ' + w + '</p>'; }).join('');
+        logBox.classList.add('visible');
+      }
+
+      renderPreview(parsedData);
+
+      generatedBlob = await generatePortaDocx(parsedData);
+      results.classList.add('visible');
+    } catch (err) {
+      alert('Erro ao processar: ' + err.message);
+      console.error(err);
+    } finally {
+      btnProcessar.disabled = false;
+      btnProcessar.textContent = 'Processar';
+    }
+  });
+
+  btnDownload.addEventListener('click', function() {
+    if (!generatedBlob) return;
+    var baseName = loadedFile.name.replace(/\.docx$/i, '');
+    downloadPortaBlob(generatedBlob, baseName + '_LISTA_PORTA.docx');
+  });
+
+})();
 </script>
 </body>
 </html>
